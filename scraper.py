@@ -1,6 +1,6 @@
 import settings
 import tweepy
-#import dataset
+import time
 from textblob import TextBlob
 import json
 
@@ -11,6 +11,7 @@ class StreamListener(tweepy.StreamListener):
 
         if status.retweeted:
             return
+
         print(status.text.encode('utf-8'))
         print(status.entities['hashtags'])
         description = status.user.description

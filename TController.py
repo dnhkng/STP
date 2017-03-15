@@ -1,6 +1,7 @@
 import time
 import zmq
 import multiprocessing
+import atexit
 
 server_ports = {"twitter"   : 7000,
                 "facebook"  : 7001,
@@ -17,7 +18,7 @@ def server(currentValues,name):
         while True:
             # Wait for next request from client
             message = socket.recv_pyobj()
-            print("Received notification from%s: %s" % (name, message))
+            print("Received notification from %s: %s" % (name, message))
             currentValues[name] = message
             socket.send_string("Message Recieved %s" % port)
 
@@ -32,7 +33,9 @@ if __name__ == '__main__':
     server_list = [ multiprocessing.Process(target=server, 
                             args=(currentValues, names)) for names in list(server_ports.keys())]
     for j in server_list:
+        j.daemon = True
         j.start()
+
     while True:
         print(currentValues)
         time.sleep(1)
